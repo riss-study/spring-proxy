@@ -12,6 +12,11 @@ public class OrderControllerV2 {
 
   private final OrderServiceV2 orderService;
 
+  // CGLIB Proxy 생성을 위한 기본 생성자
+  public OrderControllerV2() {
+    this.orderService = null;
+  }
+
   public OrderControllerV2(OrderServiceV2 orderService) {
     this.orderService = orderService;
   }
