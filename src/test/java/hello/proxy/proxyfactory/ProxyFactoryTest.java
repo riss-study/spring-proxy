@@ -41,6 +41,6 @@ public class ProxyFactoryTest {
     // AopUtils -> 내가 직접 프록시를 만들었을 땐 안되고, ProxyFactory 를 이용하여 생성 시 proxy 가 맞는 지 체크 가능
     assertThat(AopUtils.isAopProxy(proxy)).isTrue();
     assertThat(AopUtils.isJdkDynamicProxy(proxy)).isTrue();
-    assertThat(AopUtils.isCglibProxy(proxy)).isFalse();       // 구체 클래스 기반이므로 CGLIB 이 아닌 JDK 동적 프록시를 생성
+    assertThat(AopUtils.isCglibProxy(proxy)).isFalse();       // 인터페이스 기반이므로 CGLIB 이 아닌 JDK 동적 프록시를 생성
   }
 }
