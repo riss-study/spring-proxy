@@ -92,4 +92,10 @@ public class ProxyFactoryTest {
     assertThat(AopUtils.isJdkDynamicProxy(proxy)).isFalse();
     assertThat(AopUtils.isCglibProxy(proxy)).isTrue();       // 인터페이스이지만 proxyTargetClass 세팅으로 인해, JDK 동적 프록시가 아닌 구체 클래스 기반의 CGLIB 프록시 생성
   }
+
+  /**
+   * 참고!
+   * 스프링부트(2.0 이상)는 AOP를 적용할 때 기본적으로 'proxyTargetClass=true'"'로 설정해서 사용
+   * 따라서, 인터페이스가 있어도 항상 CGLIB 을 사용해서 구체 클래스 기반 프록시를 생성
+   */
 }
