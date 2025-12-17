@@ -3,6 +3,7 @@ package hello.proxy.proxyfactory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import hello.proxy.common.advice.TimeAdvice;
+import hello.proxy.common.service.ConcreteService;
 import hello.proxy.common.service.ServiceImpl;
 import hello.proxy.common.service.ServiceInterface;
 import lombok.extern.slf4j.Slf4j;
@@ -42,5 +43,53 @@ public class ProxyFactoryTest {
     assertThat(AopUtils.isAopProxy(proxy)).isTrue();
     assertThat(AopUtils.isJdkDynamicProxy(proxy)).isTrue();
     assertThat(AopUtils.isCglibProxy(proxy)).isFalse();       // 인터페이스 기반이므로 CGLIB 이 아닌 JDK 동적 프록시를 생성
+  }
+
+  @Test
+  @DisplayName("구체 클래스만 있으면 CGLIB 사용")
+  void concreteProxy() {
+
+    ConcreteService target = new ConcreteService();
+
+    ProxyFactory proxyFactory = new ProxyFactory(target);
+    proxyFactory.addAdvice(new TimeAdvice());
+    ConcreteService proxy = (ConcreteService) proxyFactory.getProxy();
+
+    log.info("targetClass: {}", target.getClass());
+    log.info("proxyClass: {}", proxy.getClass());
+    // targetClass: class hello.proxy.common.service.ConcreteService
+    // proxyClass: class hello.proxy.common.service.ConcreteService$$EnhancerBySpringCGLIB$$7379361f
+
+    // call() 메서드 실행
+    proxy.call();
+
+    assertThat(AopUtils.isAopProxy(proxy)).isTrue();
+    assertThat(AopUtils.isJdkDynamicProxy(proxy)).isFalse();
+    assertThat(AopUtils.isCglibProxy(proxy)).isTrue();       // 구체 클래스 기반이므로 JDK 동적 프록시가 아닌 CGLIB 프록시를 생성
+  }
+
+  @Test
+  @DisplayName("ProxyTargetClass 옵션을 사용하면 인터페이스가 있어도 CGLIB 를 사용하고, 클래스 기반 프록시 사용")
+  void proxyTargetClass() {
+
+    ServiceInterface target = new ServiceImpl();
+
+    ProxyFactory proxyFactory = new ProxyFactory(target);
+    // 이 true 세팅으로 인해, 인터페이스 여부에 상관없이 항상 구체 클래스 기반의 CGLIB 프록시를 생성
+    proxyFactory.setProxyTargetClass(true);
+    proxyFactory.addAdvice(new TimeAdvice());
+    ServiceInterface proxy = (ServiceInterface) proxyFactory.getProxy();
+
+    log.info("targetClass: {}", target.getClass());
+    log.info("proxyClass: {}", proxy.getClass());
+    // targetClass: class hello.proxy.common.service.ServiceImpl
+    // proxyClass: class hello.proxy.common.service.ServiceImpl$$EnhancerBySpringCGLIB$$f02e8c1
+
+    // save() 메서드 실행
+    proxy.save();
+
+    assertThat(AopUtils.isAopProxy(proxy)).isTrue();
+    assertThat(AopUtils.isJdkDynamicProxy(proxy)).isFalse();
+    assertThat(AopUtils.isCglibProxy(proxy)).isTrue();       // 인터페이스이지만 proxyTargetClass 세팅으로 인해, JDK 동적 프록시가 아닌 구체 클래스 기반의 CGLIB 프록시 생성
   }
 }
