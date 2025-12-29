@@ -18,19 +18,19 @@ public class BeanPostProcessorTest {
     ApplicationContext context = new AnnotationConfigApplicationContext(BeanPostProcessorConfig.class);
 
     // beanA 이름으로 B 객체가 빈으로 등록
-    ObjectB a = context.getBean("beanA", ObjectB.class);
+    B a = context.getBean("beanA", B.class);
     a.hello();
 
     // A는 빈으로 등록되지 않음
-    Assertions.assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(ObjectA.class));
+    Assertions.assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(A.class));
   }
 
   @Slf4j
   @Configuration
   static class BeanPostProcessorConfig {
     @Bean(name = "beanA")
-    public ObjectA a() {
-      return new ObjectA();
+    public A a() {
+      return new A();
     }
 
     @Bean
@@ -40,14 +40,14 @@ public class BeanPostProcessorTest {
   }
 
   @Slf4j
-  static class ObjectA {
+  static class A {
     public void hello() {
       log.info("hello A");
     }
   }
 
   @Slf4j
-  static class ObjectB {
+  static class B {
     public void hello() {
       log.info("hello B");
     }
@@ -60,8 +60,8 @@ public class BeanPostProcessorTest {
 
       log.info("beanName: {}, bean: {}", beanName, bean);
 
-      if (bean instanceof ObjectA) {
-        return new ObjectB();
+      if (bean instanceof A) {
+        return new B();
       }
 
       return bean;

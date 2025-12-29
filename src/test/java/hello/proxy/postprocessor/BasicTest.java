@@ -16,31 +16,31 @@ public class BasicTest {
     ApplicationContext context = new AnnotationConfigApplicationContext(BasicConfig.class);
 
     // A 빈으로 등록
-    ObjectA a = context.getBean("beanA", ObjectA.class);
+    A a = context.getBean("beanA", A.class);
     a.hello();
 
     // B 빈으로 등록 X
-    Assertions.assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(ObjectB.class));
+    Assertions.assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(B.class));
   }
 
   @Slf4j
   @Configuration
   static class BasicConfig {
     @Bean(name = "beanA")
-    public ObjectA a() {
-      return new ObjectA();
+    public A a() {
+      return new A();
     }
   }
 
   @Slf4j
-  static class ObjectA {
+  static class A {
     public void hello() {
       log.info("hello A");
     }
   }
 
   @Slf4j
-  static class ObjectB {
+  static class B {
     public void hello() {
       log.info("hello B");
     }
