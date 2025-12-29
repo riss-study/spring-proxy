@@ -13,6 +13,16 @@ import org.springframework.aop.support.NameMatchMethodPointcut;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * 문제점1: V1, V2 둘다 결국 설정이 너무 많음
+ *  - 스프링 빈이 100개 있으면, 100개의 동적 프록시 생성 코드를 만들어야 함
+ *  - 빈 생성 코드 = (빈 직접 등록 + 프록시 적용 코드). 프록시 적용 코드는 거의 중복임
+ * 문제점2: 컴포넌트 스캔 불가능
+ *   - 지금까진 프록시를 스프링 빈으로 직접 등록했음
+ *   - 컴포넌트 스캔 사용하면 스프링이 실제 객체를 스프링 빈으로 자동으로 바로 등록해버림
+ *   - 부가기능이 있는 프록시를 내가 직접 등록할 수 없음
+ *   => 빈 후처리기 사용하면 문제1, 2 해결
+ */
 @Slf4j
 @Configuration
 public class ProxyFactoryConfigV2 {
