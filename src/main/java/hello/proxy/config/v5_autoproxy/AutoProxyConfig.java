@@ -5,6 +5,7 @@ import hello.proxy.config.AppV2Config;
 import hello.proxy.config.v3_proxyfactory.advice.LogTraceAdvice;
 import hello.proxy.trace.logtrace.LogTrace;
 import org.springframework.aop.Advisor;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +30,7 @@ import org.springframework.context.annotation.Import;
  *      참고: 모든 곳에 프록시 생성은 비용 낭비이므로, 최소한의 프록시를 적용.
  *      자동 프록시 생성기는 포인트컷으로 필터링해서 어드바이스 사용 가능성이 있는 곳에만 프록시 생성
  *
- *  문제점
+ *  advisor1 문제점
  *      근데 이렇게만 하면, AppVxConfig.orderXXXVx() 에 모두 이 포인트컷 조건 만족으로 어드바이스 실행됨 (Config 이므로 스프링 실행 시점에 빈 등록 시)
  *      EnableWebMvcConfiguration.requestMappingHandlerAdapter() 에도 찍혀있음
  */
@@ -37,11 +38,37 @@ import org.springframework.context.annotation.Import;
 @Import({ AppV1Config.class, AppV2Config.class })
 public class AutoProxyConfig {
 
-  @Bean
+//  @Bean
   public Advisor advisor1(LogTrace logTrace) {
 
     NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
     pointcut.setMappedNames("request*", "order*", "save*");
+
+    LogTraceAdvice advice = new LogTraceAdvice(logTrace);
+    return new DefaultPointcutAdvisor(pointcut, advice);
+  }
+
+  // 아직 패키지 기준으로만 포인트컷 매칭 했기 때문에 no-log 도 logTrace 출력됨
+//  @Bean
+  public Advisor advisor2(LogTrace logTrace) {
+
+    AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+    pointcut.setExpression("execution(* hello.proxy.app..*(..))");
+    // app..* app 하위와 app 의 모든 패키지라는 뜻
+    // (..) 파라미터는 뭐든 상관없다는 뜻
+
+    LogTraceAdvice advice = new LogTraceAdvice(logTrace);
+    return new DefaultPointcutAdvisor(pointcut, advice);
+  }
+
+  // hello.proxy.app 과 하위 패키지의 모든 클래스에서 no-log 메서드는 제외하라는 포인트컷 표현식 추가
+  @Bean
+  public Advisor advisor3(LogTrace logTrace) {
+
+    AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+    pointcut.setExpression("execution(* hello.proxy.app..*(..)) && !execution(* hello.proxy.app..noLog(..))");
+    // app..* app 하위와 app 의 모든 패키지라는 뜻
+    // (..) 파라미터는 뭐든 상관없다는 뜻
 
     LogTraceAdvice advice = new LogTraceAdvice(logTrace);
     return new DefaultPointcutAdvisor(pointcut, advice);
