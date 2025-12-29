@@ -20,7 +20,7 @@ public class BasicTest {
     a.hello();
 
     // B 빈으로 등록 X
-    Assertions.assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean("beanB"));
+    Assertions.assertThrows(NoSuchBeanDefinitionException.class, () -> context.getBean(ObjectB.class));
   }
 
   @Slf4j
