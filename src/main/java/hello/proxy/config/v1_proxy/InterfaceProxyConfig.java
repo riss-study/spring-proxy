@@ -3,7 +3,7 @@ package hello.proxy.config.v1_proxy;
 import hello.proxy.app.v1.OrderControllerV1;
 import hello.proxy.app.v1.OrderControllerV1Impl;
 import hello.proxy.app.v1.OrderRepositoryV1;
-import hello.proxy.app.v1.OrderRepositoryV1impl;
+import hello.proxy.app.v1.OrderRepositoryV1Impl;
 import hello.proxy.app.v1.OrderServiceV1;
 import hello.proxy.app.v1.OrderServiceV1Impl;
 import hello.proxy.config.v1_proxy.interface_proxy.OrderControllerInterfaceProxy;
@@ -30,7 +30,7 @@ public class InterfaceProxyConfig {
 
   @Bean
   public OrderRepositoryV1 orderRepository(LogTrace logTrace) {
-    OrderRepositoryV1impl repositoryImpl = new OrderRepositoryV1impl();
+    OrderRepositoryV1Impl repositoryImpl = new OrderRepositoryV1Impl();
     return new OrderRepositoryInterfaceProxy(repositoryImpl, logTrace);
   }
 }
