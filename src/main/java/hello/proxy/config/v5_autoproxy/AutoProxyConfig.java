@@ -33,6 +33,11 @@ import org.springframework.context.annotation.Import;
  *  advisor1 문제점
  *      근데 이렇게만 하면, AppVxConfig.orderXXXVx() 에 모두 이 포인트컷 조건 만족으로 어드바이스 실행됨 (Config 이므로 스프링 실행 시점에 빈 등록 시)
  *      EnableWebMvcConfiguration.requestMappingHandlerAdapter() 에도 찍혀있음
+ *
+ *  AutoProxyCreator 상황별 정리
+ *  - advisor1 의 포인트컷만 만족 -> 프록시 1개 생성, 프록시에 advisor1 만 포함
+ *  - advisor1, advisor2 의 포인트컷 모두 만족 -> 프록시 1개 생성, 프록시에 advisor1, advisor2 모두 포함
+ *  - advisor1, advisor2 의 포인트컷 모두 만족하지 않음 -> 프록시 생성되지 않음. 원복 객체 빈 리턴
  */
 @Configuration
 @Import({ AppV1Config.class, AppV2Config.class })
