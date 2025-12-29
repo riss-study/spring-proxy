@@ -28,6 +28,10 @@ import org.springframework.context.annotation.Import;
  *
  *      참고: 모든 곳에 프록시 생성은 비용 낭비이므로, 최소한의 프록시를 적용.
  *      자동 프록시 생성기는 포인트컷으로 필터링해서 어드바이스 사용 가능성이 있는 곳에만 프록시 생성
+ *
+ *  문제점
+ *      근데 이렇게만 하면, AppVxConfig.orderXXXVx() 에 모두 이 포인트컷 조건 만족으로 어드바이스 실행됨 (Config 이므로 스프링 실행 시점에 빈 등록 시)
+ *      EnableWebMvcConfiguration.requestMappingHandlerAdapter() 에도 찍혀있음
  */
 @Configuration
 @Import({ AppV1Config.class, AppV2Config.class })
