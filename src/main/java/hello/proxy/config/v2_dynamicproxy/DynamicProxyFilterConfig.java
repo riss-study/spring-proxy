@@ -3,7 +3,7 @@ package hello.proxy.config.v2_dynamicproxy;
 import hello.proxy.app.v1.OrderControllerV1;
 import hello.proxy.app.v1.OrderControllerV1Impl;
 import hello.proxy.app.v1.OrderRepositoryV1;
-import hello.proxy.app.v1.OrderRepositoryV1impl;
+import hello.proxy.app.v1.OrderRepositoryV1Impl;
 import hello.proxy.app.v1.OrderServiceV1;
 import hello.proxy.app.v1.OrderServiceV1Impl;
 import hello.proxy.config.v2_dynamicproxy.handler.LogTraceBasicHandler;
@@ -49,7 +49,7 @@ public class DynamicProxyFilterConfig {
   @Bean
   public OrderRepositoryV1 orderRepositoryV1(LogTrace logTrace) {
 
-    OrderRepositoryV1impl orderRepository = new OrderRepositoryV1impl();
+    OrderRepositoryV1Impl orderRepository = new OrderRepositoryV1Impl();
 
     OrderRepositoryV1 proxy = (OrderRepositoryV1) Proxy.newProxyInstance(
         OrderRepositoryV1.class.getClassLoader(),
